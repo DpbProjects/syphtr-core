@@ -4,9 +4,10 @@ import { env } from "@/env";
 
 export default {
   schema: "./src/server/db/schema.ts",
+  out: "./src/server/db/",
   driver: "pg",
   dbCredentials: {
     connectionString: env.DATABASE_URL,
   },
-  tablesFilter: ["syphtr-core_*"],
+  // tablesFilter: ["syphtr-core_*"],
 } satisfies Config;
