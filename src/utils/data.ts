@@ -23,7 +23,15 @@ export const fetchProfiles = async () => {
 // JOBS
 export const fetchJobs = async () => {
   noStore();
-  const response = await db.query.job.findMany();
+  const response = await db.query.job.findMany({
+    with: {
+      jobCandidates: {
+        with: {
+          profile: true,
+        },
+      },
+    },
+  });
 
   return response;
 };
