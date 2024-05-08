@@ -1,12 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 import { Modal, Card, Button } from "@rewind-ui/core";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import CreateForm from "./forms/create-form";
 
-export default function CreateModel() {
+interface ModelProps {
+  content: ReactNode;
+}
+
+export default function CreateModel({ content }: ModelProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -19,7 +23,7 @@ export default function CreateModel() {
       >
         <Card size="sm" className="w-full">
           <Card.Header
-            className="bg-gray-50/50 font-medium py-6 px-6"
+            className="bg-gray-50/50 px-6 py-6 font-medium"
             actions={
               <Button
                 onClick={() => setOpen(false)}
@@ -31,14 +35,13 @@ export default function CreateModel() {
               </Button>
             }
           >
-           <p className=" text-2xl font-bold text-center">Create a job</p>
+            <p className=" text-center text-2xl font-bold">Create a job</p>
           </Card.Header>
           <Card.Body className="space-y-3">
-            <CreateForm />
+            {/* <CreateForm /> */}
+            {content}
           </Card.Body>
-          <Card.Footer className="justify-end space-x-2 bg-gray-50/50">
-           
-          </Card.Footer>
+          <Card.Footer className="justify-end space-x-2 bg-gray-50/50"></Card.Footer>
         </Card>
       </Modal>
 

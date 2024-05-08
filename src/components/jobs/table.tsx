@@ -116,7 +116,6 @@ export default async function JobsTable({
           </table>
         </div>
       </div>
-      <pre>{JSON.stringify(allJobs, null, 2)}</pre>
     </div>
   );
 }
