@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { deleteJob } from "@/utils/actions";
 
 export function ViewJob({ id }: { id: number }) {
   return (
@@ -25,11 +28,11 @@ export function EditJob({ id }: { id: number }) {
 
 export function DeleteJob({ id }: { id: number }) {
   return (
-    <Link
-      href={`/dashboard/jobs/${id}`}
-      className="rounded-md border p-2 hover:bg-gray-100 text-red-700"
+    <button
+      onClick={() => deleteJob(id)}
+      className="rounded-md border p-2 text-red-700 hover:bg-gray-100"
     >
       <TrashIcon className="w-5" />
-    </Link>
+    </button>
   );
 }

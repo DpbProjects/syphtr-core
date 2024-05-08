@@ -1,18 +1,20 @@
+"use server";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { db } from "@/server/db";
 import { z } from "zod";
 import { job } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 const JobFormData = z.object({
   id: z.number(), // Assuming it's a number
-  clientId: z.number().nullable(),
   department: z.string().nullable(),
   businessUnit: z.string().nullable(),
   hiringTeam: z.array(z.string()),
   title: z.string().nullable(),
-  salary: z.number().nullable(),
+  salary: z.coerce.number().nullable(),
   currency: z.string().nullable(),
   openSince: z.string().nullable(), // Assuming it's a string
   createdAt: z.string().nullable(), // Assuming it's a string
@@ -32,11 +34,9 @@ const CreateJobSchema = JobFormData.omit({
 
 // jobs
 
-export async function createJob(formData: FormData) {
+export async function createJob(formData: FormData, clientId = 1) {
   try {
-    // Parse form data using Zod schema
     const {
-      clientId,
       department,
       businessUnit,
       hiringTeam,
@@ -50,7 +50,6 @@ export async function createJob(formData: FormData) {
       location,
       orgId,
     } = CreateJobSchema.parse({
-      clientId: formData.get("clientId"),
       department: formData.get("department"),
       businessUnit: formData.get("businessUnit"),
       hiringTeam: formData.getAll("hiringTeam"),
@@ -65,32 +64,45 @@ export async function createJob(formData: FormData) {
       orgId: formData.get("orgId"),
     });
 
+    console.log(formData);
+
     // Create a new job record using Drizzle ORM
-    const newJob = await db.insert(job).values({
-      clientId,
-      department,
-      businessUnit,
-      hiringTeam,
-      title,
-      salary,
-      currency,
-      openSince,
-      userId,
-      description,
-      jobDescription,
-      location,
-      orgId,
-    });
+    await db
+      .insert(job)
+      .values({
+        clientId,
+        department,
+        businessUnit,
+        hiringTeam,
+        title,
+        salary,
+        currency,
+        openSince,
+        userId,
+        description,
+        jobDescription,
+        location,
+        orgId,
+      })
+      .returning();
 
     // After creating the job, perform any necessary actions
     revalidatePath("/dashboard/jobs");
     redirect("/dashboard/jobs");
-
-    return newJob;
   } catch (error) {
     // Handle validation errors or database errors
     console.error("Error creating job:", error);
     // Optionally, rethrow the error for further handling
+    throw error;
+  }
+}
+
+export async function deleteJob(jobId: number) {
+  try {
+    await db.delete(job).where(eq(job.id, jobId));
+    revalidatePath("/dashboard/jobs");
+  } catch (error) {
+    console.log("Error deleting job:", error);
     throw error;
   }
 }

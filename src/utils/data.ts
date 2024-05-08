@@ -1,6 +1,6 @@
 import { unstable_noStore as noStore } from "next/cache";
 
-import { eq, like, ilike } from "drizzle-orm";
+import { eq, ilike } from "drizzle-orm";
 import { db } from "@/server/db";
 
 // schema
@@ -12,7 +12,7 @@ export const fetchProfiles = async (query: string) => {
 
   const response = await db.query.profile.findMany({
     where: ilike(profile.firstName, `${query}%`),
-    limit: 5,
+    limit: 8,
     with: {
       experience: true,
       education: true,
@@ -68,7 +68,7 @@ export const fetchJobById = async (jobId: number) => {
   return response;
 };
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 8;
 
 export const fetchFilteredJobs = async (query: string, currentPage: number) => {
   noStore();
