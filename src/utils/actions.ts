@@ -85,7 +85,6 @@ export async function createJob(formData: FormData, clientId = 1) {
         orgId,
       })
       .returning();
-
     // After creating the job, perform any necessary actions
     revalidatePath("/dashboard/jobs");
     redirect("/dashboard/jobs");

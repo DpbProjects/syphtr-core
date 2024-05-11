@@ -4,8 +4,6 @@ import { useState, type ReactNode } from "react";
 import { Modal, Card, Button } from "@rewind-ui/core";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import CreateForm from "./forms/create-form";
-
 interface ModelProps {
   content: ReactNode;
 }

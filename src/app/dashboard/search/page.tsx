@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import { fetchProfiles } from "@/utils/data";
-import ProfileCard from "@/components/profile-card";
-import Search from "@/components/search";
+
+import ProfileCard from "@/components/search/profile-card";
+import Search from "@/components/search/profile-search";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { query?: string };
+  searchParams?: { query?: string; id?: string };
 }) {
   const query = searchParams?.query ?? "";
   const profiles = await fetchProfiles(query);
@@ -17,6 +18,7 @@ export default async function Page({
     <main className=" bg-gray-50">
       <h1 className=" mb-4 text-3xl font-bold">Search Page</h1>
       <Search placeholder="Search by name..." />
+
       <div className="grid grid-cols-1 gap-3">
         <Suspense fallback={<Loading />}>
           {query ? (

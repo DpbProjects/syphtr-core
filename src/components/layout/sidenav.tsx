@@ -25,12 +25,13 @@ export default function SideNav({ children }: SideNavProps) {
           setExpanded(state.expanded);
           setMobile(state.mobile);
         }}
-        className="absolute"
-        color="zinc"
+        className="fixed"
+        color="white"
+        shadow="xl"
       >
         <Sidebar.Head>
           <Sidebar.Head.Logo>
-            <Image src="/favicon.ico" width={48} height={48} alt="Rewind-UI" />
+            <Image src="/site-icon.png" width={28} height={28} alt="Rewind-UI" />
           </Sidebar.Head.Logo>
           <Sidebar.Head.Title>Syphtr</Sidebar.Head.Title>
           {/* <Sidebar.Head.Toggle /> */}
@@ -58,7 +59,7 @@ export default function SideNav({ children }: SideNavProps) {
 
             <Sidebar.Nav.Section.Item
               icon={<Cable />}
-              label="Pipelines"
+              label="Pipeline Database"
               href="#"
             />
           </Sidebar.Nav.Section>

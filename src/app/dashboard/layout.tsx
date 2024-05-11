@@ -1,9 +1,19 @@
 import SideNav from "@/components/layout/sidenav";
+import { SideDrawerProvider } from "@/context/side-draw-context";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+import ProfilePreview from "@/components/search/profile-preview";
+
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className="flex h-screen w-full">
-      <SideNav>{children}</SideNav>
-    </div>
+    <SideDrawerProvider>
+      <ProfilePreview />
+      <div className="flex h-screen w-full">
+        <SideNav>{children}</SideNav>
+      </div>
+    </SideDrawerProvider>
   );
 }

@@ -1,6 +1,6 @@
-// import Image from "next/image";
-import Link from "next/link";
 import type { Profile } from "@/utils/types";
+
+import DrawerToggleButton from "./profile-preview-toggle";
 
 type ProfileCardProps = {
   profileData: Profile;
@@ -14,7 +14,6 @@ export default function ProfileCard({ profileData, key }: ProfileCardProps) {
     country,
     occupation,
     summary,
-    // profilePicUrl,
     state,
     city,
   } = profileData;
@@ -42,7 +41,8 @@ export default function ProfileCard({ profileData, key }: ProfileCardProps) {
       <div className="min-w-[325px] rounded-r-lg bg-gray-200 px-6 py-4">
         <p className=" mb-2 text-2xl font-bold">Score</p>
 
-        <Link href={`search/${id}`}>View profile</Link>
+        {/* <Link href={`search/${id}`}>View profile</Link> */}
+        <DrawerToggleButton id={id} />
       </div>
     </div>
   );
