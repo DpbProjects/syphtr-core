@@ -7,7 +7,6 @@ import {
   timestamp,
   uniqueIndex,
   doublePrecision,
-  index,
   primaryKey,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -169,10 +168,17 @@ export const education = pgTable("Education", {
   ),
 });
 
-export const educationRelations = relations(education, ({ one }) => ({
+export const educationToProfileRelations = relations(education, ({ one }) => ({
   education: one(profile, {
     fields: [education.profileId],
     references: [profile.id],
+  }),
+}));
+
+export const educationToSharedProfileRelations = relations(education, ({ one }) => ({
+  education: one(sharedRawProfile, {
+    fields: [education.profileId],
+    references: [sharedRawProfile.id],
   }),
 }));
 
@@ -271,10 +277,17 @@ export const experience = pgTable("Experience", {
   ),
 });
 
-export const experienceRelations = relations(experience, ({ one }) => ({
+export const experienceToProfileRelations = relations(experience, ({ one }) => ({
   experience: one(profile, {
-    fields: [experience.profileId],
+    fields: [experience.sharedRawProfileId],
     references: [profile.id],
+  }),
+}));
+
+export const experienceToSharedProfileRelations = relations(experience, ({ one }) => ({
+  experience: one(sharedRawProfile, {
+    fields: [experience.sharedRawProfileId],
+    references: [sharedRawProfile.id],
   }),
 }));
 
@@ -673,6 +686,11 @@ export const sharedRawProfile = pgTable(
     };
   },
 );
+
+export const sharedRawProfileRelations = relations(sharedRawProfile, ({ many }) => ({
+  experience: many(experience),
+  education: many(education),
+}));
 
 export const companyProductCategory = pgTable(
   "CompanyProductCategory",

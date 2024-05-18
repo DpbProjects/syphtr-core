@@ -1,7 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-
 import { useDebouncedCallback } from "use-debounce";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
@@ -11,7 +11,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { replace } = useRouter();
 
-  const handleSearch = useDebouncedCallback((term: string) => {
+  const setParameters = (term: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", "1");
     if (term) {
@@ -20,10 +20,24 @@ export default function Search({ placeholder }: { placeholder: string }) {
       params.delete("query");
     }
     replace(`${pathname}?${params.toString()}`);
+
+    localStorage.setItem("query", params.toString());
+  };
+
+  const handleSearch = useDebouncedCallback((term: string) => {
+    setParameters(term);
   }, 300);
 
+  useEffect(() => {
+    const query = localStorage.getItem("query");
+
+    if (!query || query !== "") {
+      replace(`${pathname}?${query?.toString()}`);
+    }
+  });
+
   return (
-    <div className="relative flex flex-1 flex-shrink-0 max-w-72 mb-6">
+    <div className="relative mb-6 flex max-w-72 flex-1 flex-shrink-0">
       <label htmlFor="search" className="sr-only">
         Search
       </label>

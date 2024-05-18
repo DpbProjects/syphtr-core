@@ -10,8 +10,8 @@ export default async function Layout({
 }) {
   return (
     <SideDrawerProvider>
-      <ProfilePreview />
-      <div className="flex h-screen w-full">
+      <div className="flex max-h-max w-full">
+        <ProfilePreview />
         <SideNav>{children}</SideNav>
       </div>
     </SideDrawerProvider>

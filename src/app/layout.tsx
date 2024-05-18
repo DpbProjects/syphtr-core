@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className=" min-h-screen">
       <body className={`font-sans ${inter.variable}`}>{children}</body>
     </html>
   );

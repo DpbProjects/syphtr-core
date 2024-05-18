@@ -4,14 +4,14 @@ import { eq, ilike } from "drizzle-orm";
 import { db } from "@/server/db";
 
 // schema
-import { profile, job } from "@/server/db/schema";
+import { profile, job, sharedRawProfile } from "@/server/db/schema";
 
 // profiles
 export const fetchProfiles = async (query: string) => {
   noStore();
 
-  const response = await db.query.profile.findMany({
-    where: ilike(profile.firstName, `${query}%`),
+  const response = await db.query.sharedRawProfile.findMany({
+    where: ilike(sharedRawProfile.firstName, `${query}%`),
     limit: 8,
     with: {
       experience: true,
