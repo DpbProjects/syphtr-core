@@ -1,38 +1,61 @@
 import { Suspense } from "react";
-import { fetchProfiles } from "@/utils/data";
+import {
+  fetchSharedProfiles,
+  fetchSharedProfilesPages,
+  fetchSharedProfileCount,
+} from "@/utils/data";
 
 import ProfileCard from "@/components/search/profile-card";
-import Search from "@/components/search/profile-search";
+import ProfileForm from "@/components/search/profile-form";
+import type { FormValues } from "@/utils/types";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { query?: string; id?: string };
+  searchParams: FormValues;
 }) {
-  const query = searchParams?.query ?? "";
-  const profiles = await fetchProfiles(query);
+  const query = searchParams ?? {};
+  // const currentPage = Number(searchParams?.page) || 1;
+
+  const sharedProfiles = await fetchSharedProfiles(query);
+
+  const sharedProfileCount = await fetchSharedProfileCount();
+
+  const hasParams = Object.keys(query).length !== 0;
+  const hasProfiles = sharedProfiles.length !== 0;
+
+  console.log(sharedProfiles);
 
   const Loading = () => <div>Loading......</div>;
 
   return (
-    <main className=" bg-gray-50">
-      <h1 className=" mb-4 text-3xl font-bold">Search Page</h1>
-      <Search placeholder="Search by name..." />
-
-      <div className="grid grid-cols-1 gap-3">
-        <Suspense fallback={<Loading />}>
-          {query ? (
-            profiles?.map((profile) => (
-              <ProfileCard
-                key={profile.publicIdentifier}
-                profileData={profile}
-              />
-            ))
-          ) : (
-            <div>No results</div>
-          )}
-        </Suspense>
-      </div>
+    <main className=" bg-white ">
+      <Suspense fallback={<Loading />}>
+        <div className="flex gap-3">
+          <div className=" min-w-[712px]">
+            {hasParams && hasProfiles ? (
+              sharedProfiles?.map((profile) => {
+                const { SharedRawProfile, Education, Experience } = profile;
+                return (
+                  <ProfileCard
+                    key={profile.SharedRawProfile.publicIdentifier}
+                    profileData={{
+                      SharedRawProfile,
+                      Education,
+                      Experience,
+                    }}
+                  />
+                );
+              })
+            ) : (
+              <div>No results</div>
+            )}
+          </div>
+          <div className="sticky top-16 flex h-screen min-h-screen w-full overflow-y-auto overflow-x-hidden rounded-lg bg-gray-100">
+            <ProfileForm />
+          </div>
+        </div>
+      </Suspense>
     </main>
   );
 }
