@@ -5,7 +5,9 @@ import { useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { RocketIcon, User, Cable, Book, Users } from "lucide-react";
+import { User, Book, UsersRound, GroupIcon, BarChartBig } from "lucide-react";
+
+// import Search from "../search/profile-search";
 
 type SideNavProps = {
   children: ReactNode;
@@ -31,7 +33,12 @@ export default function SideNav({ children }: SideNavProps) {
       >
         <Sidebar.Head>
           <Sidebar.Head.Logo>
-            <Image src="/site-icon.png" width={28} height={28} alt="Rewind-UI" />
+            <Image
+              src="/site-icon.png"
+              width={28}
+              height={28}
+              alt="Rewind-UI"
+            />
           </Sidebar.Head.Logo>
           <Sidebar.Head.Title>Syphtr</Sidebar.Head.Title>
           {/* <Sidebar.Head.Toggle /> */}
@@ -40,9 +47,9 @@ export default function SideNav({ children }: SideNavProps) {
         <Sidebar.Nav>
           <Sidebar.Nav.Section>
             <Sidebar.Nav.Section.Item
-              icon={<RocketIcon />}
+              icon={<BarChartBig />}
               label="Dashboard"
-              href="#"
+              href="/dashboard"
               active
             />
           </Sidebar.Nav.Section>
@@ -58,8 +65,8 @@ export default function SideNav({ children }: SideNavProps) {
             </Link>
 
             <Sidebar.Nav.Section.Item
-              icon={<Cable />}
-              label="Pipeline Database"
+              icon={<UsersRound />}
+              label="Talent pool"
               href="#"
             />
           </Sidebar.Nav.Section>
@@ -70,7 +77,11 @@ export default function SideNav({ children }: SideNavProps) {
               label="Jobs"
               href="jobs"
             />
-            <Sidebar.Nav.Section.Item icon={<Users />} label="Team" href="#" />
+            <Sidebar.Nav.Section.Item
+              icon={<GroupIcon />}
+              label="Team"
+              href="#"
+            />
           </Sidebar.Nav.Section>
         </Sidebar.Nav>
 
@@ -97,7 +108,7 @@ export default function SideNav({ children }: SideNavProps) {
           />
         )}
         <header className="sticky top-0 flex min-h-[4rem] w-full flex-row items-center border-b border-b-gray-100 bg-white px-8 shadow-sm">
-          <span>Navbar</span>
+          {/* <Search placeholder="Search by name..." /> */}
 
           <Button
             onClick={() => {
