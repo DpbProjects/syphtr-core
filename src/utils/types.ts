@@ -28,7 +28,7 @@ export interface Education {
   sharedRawProfileId: number | null; // Adjust type as per your requirement
 }
 
-export interface Profile {
+export interface SharedProfile {
   id: number;
   publicIdentifier: string | null;
   firstName: string | null;
@@ -49,9 +49,17 @@ export interface Profile {
   skills: string[] | null;
   lastUpdated: string | null;
   linkedinProfileUrl: string | null;
+}
+
+export interface Profile extends SharedProfile {
   talentPoolId: number | null;
   orgId: string | null;
   userId: string | null;
-  experience: Experience[];
-  education: Education[];
 }
+
+export type FormValues = {
+  fullName: string;
+  state: string;
+  country: string;
+  city: string;
+};
