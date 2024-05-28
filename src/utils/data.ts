@@ -1,52 +1,81 @@
 import { unstable_noStore as noStore } from "next/cache";
 
-import { and, count, eq, ilike } from "drizzle-orm";
+import { and, count, eq, ilike, inArray, not, notIlike } from "drizzle-orm";
 import { db } from "@/server/db";
 
 import type { FormValues } from "./types";
 
 // schema
-import {
-  job,
-  sharedRawProfile,
-  experience,
-  education,
-} from "@/server/db/schema";
+import { job, sharedRawProfile, experience } from "@/server/db/schema";
 
-// shared profiles
-/**
- *
- * @todo
- * [] error handling
- * [] validation
- * [] performance optimization
- */
+// shared profiles data
+
 export const fetchSharedProfiles = async (formValues: FormValues) => {
+  /**
+   *
+   * @task
+   * [] min and max experience
+   * [] add checkbox to for current or past role
+   * [] excluded words
+   *
+   * @todo
+   * [] error handling
+   * [] validation - zod
+   * [] performance optimization
+   */
+
   noStore();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { fullName, state, country, city } = formValues;
+  const { fullName, state, country, city, pastJobTitle, pastJobCompanyName } =
+    formValues;
 
-  const data = await db
-    .select()
-    .from(sharedRawProfile)
-    .limit(8)
-    .leftJoin(experience, eq(experience.profileId, sharedRawProfile.id))
-    .leftJoin(education, eq(education.profileId, sharedRawProfile.id))
-    .where(
-      and(
-        fullName
-          ? ilike(sharedRawProfile.firstName, `${fullName}%`)
-          : undefined,
-        city ? ilike(sharedRawProfile.city, `${city}%`) : undefined,
-        state ? ilike(sharedRawProfile.state, `${state}%`) : undefined,
-        country
-          ? ilike(sharedRawProfile.countryFullName, `${country}%`)
-          : undefined,
+  // const excludedWords = ["Developer", "Company"];
+
+  // fetch and filter
+  // add logic to find current or past role
+  // add scoring
+  // paginate
+
+  const sharedProfiles = await db.query.sharedRawProfile.findMany({
+    where: and(
+      fullName ? ilike(sharedRawProfile.firstName, `${fullName}%`) : undefined,
+      city ? ilike(sharedRawProfile.city, `${city}%`) : undefined,
+      state ? ilike(sharedRawProfile.state, `${state}%`) : undefined,
+      country
+        ? ilike(sharedRawProfile.countryFullName, `${country}%`)
+        : undefined,
+      inArray(
+        sharedRawProfile.id,
+        db
+          .select({ profileId: experience.sharedRawProfileId })
+          .from(experience)
+          .where(
+            and(
+              // excludedWords.length > 0
+              //   ? not(inArray(experience.title, excludedWords))
+              //   : undefined,
+              // excludedWords.length > 0
+              //   ? not(inArray(experience.company, excludedWords))
+              //   : undefined,
+              pastJobTitle
+                ? ilike(experience.title, `${pastJobTitle}%`)
+                : undefined,
+              pastJobCompanyName
+                ? ilike(experience.company, `${pastJobCompanyName}%`)
+                : undefined,
+            ),
+          ),
       ),
-    );
+    ),
+    with: {
+      experience: true,
+      education: true,
+    },
 
-  return data;
+    limit: 5,
+  });
+
+  return sharedProfiles;
 };
 
 export const fetchSharedProfilesPages = async () => {
