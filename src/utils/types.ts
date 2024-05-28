@@ -49,6 +49,8 @@ export interface SharedProfile {
   skills: string[] | null;
   lastUpdated: string | null;
   linkedinProfileUrl: string | null;
+  experience: Experience[];
+  education: Education[];
 }
 
 export interface Profile extends SharedProfile {
@@ -62,4 +64,6 @@ export type FormValues = {
   state: string;
   country: string;
   city: string;
+  pastJobTitle: string;
+  pastJobCompanyName: string;
 };
