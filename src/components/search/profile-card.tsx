@@ -3,11 +3,7 @@ import type { Education, SharedProfile, Experience } from "@/utils/types";
 import DrawerToggleButton from "./profile-preview-toggle";
 
 type ProfileCardProps = {
-  profileData: {
-    SharedRawProfile: SharedProfile;
-    Education: Education | null;
-    Experience: Experience | null;
-  };
+  profileData: SharedProfile;
   key: SharedProfile["publicIdentifier"];
 };
 
@@ -22,7 +18,11 @@ export default function ProfileCard({ profileData, key }: ProfileCardProps) {
     city,
 
     // experience,
-  } = profileData.SharedRawProfile;
+  } = profileData;
+
+  // const experience = profileData.experience.map((exp) => exp);
+
+  // console.log(experience);
 
   return (
     <div
