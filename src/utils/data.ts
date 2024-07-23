@@ -1,12 +1,15 @@
 import { unstable_noStore as noStore } from "next/cache";
 
-import { and, count, eq, ilike, inArray, not, notIlike } from "drizzle-orm";
+import { and, count, eq, ilike, inArray } from "drizzle-orm";
 import { db } from "@/server/db";
 
 import type { FormValues } from "./types";
+import { experience } from "@/server/db/schema";
 
 // schema
-import { job, sharedRawProfile, experience } from "@/server/db/schema";
+
+import { sharedRawProfile } from "@/server/db/schema/profile";
+import { job } from "@/server/db/schema/job";
 
 // shared profiles data
 
@@ -17,6 +20,7 @@ export const fetchSharedProfiles = async (formValues: FormValues) => {
    * [] min and max experience
    * [] add checkbox to for current or past role
    * [] excluded words
+   * [] split queries in to separate files
    *
    * @todo
    * [] error handling
@@ -26,19 +30,13 @@ export const fetchSharedProfiles = async (formValues: FormValues) => {
 
   noStore();
 
-  const { fullName, state, country, city, pastJobTitle, pastJobCompanyName } =
-    formValues;
+  const { fullName, state, country, city, jobTitle, companyName } = formValues;
 
-  // const excludedWords = ["Developer", "Company"];
-
-  // fetch and filter
-  // add logic to find current or past role
-  // add scoring
-  // paginate
+  console.log(formValues);
 
   const sharedProfiles = await db.query.sharedRawProfile.findMany({
     where: and(
-      fullName ? ilike(sharedRawProfile.firstName, `${fullName}%`) : undefined,
+      fullName ? ilike(sharedRawProfile.fullName, `${fullName}%`) : undefined,
       city ? ilike(sharedRawProfile.city, `${city}%`) : undefined,
       state ? ilike(sharedRawProfile.state, `${state}%`) : undefined,
       country
@@ -57,12 +55,12 @@ export const fetchSharedProfiles = async (formValues: FormValues) => {
               // excludedWords.length > 0
               //   ? not(inArray(experience.company, excludedWords))
               //   : undefined,
-              pastJobTitle
-                ? ilike(experience.title, `${pastJobTitle}%`)
-                : undefined,
-              pastJobCompanyName
-                ? ilike(experience.company, `${pastJobCompanyName}%`)
-                : undefined,
+              jobTitle ? ilike(experience.title, `${jobTitle}%`) : undefined,
+              // arrayContains(experience.company, `${companyName}%`),
+              // inArray(experience.company, ["one.com", "Torch"]),
+              // companyName
+              //   ?
+              //   : undefined,
             ),
           ),
       ),
@@ -77,6 +75,38 @@ export const fetchSharedProfiles = async (formValues: FormValues) => {
 
   return sharedProfiles;
 };
+
+// export const fetchCompaniesInCategory = async (categoryInput: string) => {
+//   const query = await db.query.category.findMany({
+//     where: eq(category.name, categoryInput),
+//     with: {
+//       companyProductCategory: {
+//         columns: {
+//           companyId: true,
+//         },
+//       },
+//     },
+//   });
+
+//   const result = query[0]?.companyProductCategory.map(
+//     (company: { companyId: any; }) => company.companyId,
+//   );
+
+//   if (!result || result.length === 0) {
+//     throw new Error("No company IDs provided");
+//   }
+
+//   const companies = await db
+//     .select()
+//     .from(company)
+//     .where(inArray(company.id, result));
+
+//   const companiesArray = companies.map((company) => company.name);
+
+//   console.log(companiesArray);
+
+//   return companiesArray;
+// };
 
 export const fetchSharedProfilesPages = async () => {
   noStore();
@@ -146,12 +176,25 @@ export const fetchFilteredJobs = async (query: string, currentPage: number) => {
     limit: 2,
     offset: offset,
     where: eq(job.title, query),
+    // with: {
+    //   jobCandidates: {
+    //     with: {
+    //       profile: true,
+    //     },
+    //   },
+    // },
+  });
+
+  return response;
+};
+
+// CATEGORY
+
+export const fetchCategories = async () => {
+  noStore();
+  const response = await db.query.category.findMany({
     with: {
-      jobCandidates: {
-        with: {
-          profile: true,
-        },
-      },
+      companyProductCategory: true,
     },
   });
 

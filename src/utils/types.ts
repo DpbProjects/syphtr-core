@@ -1,3 +1,5 @@
+import type { Tag } from "emblor";
+
 export interface Experience {
   id: number;
   profileId: number | null;
@@ -64,6 +66,12 @@ export type FormValues = {
   state: string;
   country: string;
   city: string;
-  pastJobTitle: string;
-  pastJobCompanyName: string;
+  jobTitle: string;
+  companyName: string[];
+};
+
+export type Category = {
+  id: number;
+  name: string;
+  companyProductCategory: [];
 };

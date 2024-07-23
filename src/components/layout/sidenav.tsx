@@ -133,7 +133,8 @@ export default function SideNav({ children }: SideNavProps) {
           </Button>
         </header>
 
-        <div className="h-full w-full p-8">{children}</div>
+        {/* <div className="h-full w-full p-8"></div> */}
+        {children}
 
         {/* <div className="flex sticky bottom-0 items-center bg-white w-full min-h-[4rem] px-8">
           <span>Footer</span>
